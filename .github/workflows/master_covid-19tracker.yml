@@ -25,13 +25,20 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          npm run test --if-present
-      
+                   
+      - name: Zip Release
+        # You may pin to the exact commit or the version.
+        # uses: TheDoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
+        uses: TheDoctor0/zip-release@0.6.2
+        with:
+          filename: release.zip
+          path: ./build/*
+          
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: .
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,4 +60,4 @@ jobs:
           app-name: 'Covid-19Tracker'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_07FA0F7EDC054B4C96EB790093D88DDA }}
-          package: .
+          package: release.zip
